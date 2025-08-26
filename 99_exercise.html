@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .button-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .button-box button {
+        width: 200px;
+        background: lightskyblue;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 0.3rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h2>기본 비동기 패턴</h2>
+      <section class="button-box">
+        <button id="callback-btn">콜백 지옥</button>
+        <button id="promise-btn">프라미스</button>
+        <button id="async-await-btn">async/await</button>
+      </section>
+    </section>
+    <script>
+      // 기본 비동기 패턴
+      const callbackBtn = document.querySelector("#callback-btn");
+      const promiseBtn = document.querySelector("#promise-btn");
+      const asyncAwaitBtn = document.querySelector("#async-await-btn");
+
+      // Promise
+      function asyncTask(taskName, ms) {
+        return new Promise((resolve) => {
+          alert(`${taskName} 시작! (${ms / 1000}초)`);
+          setTimeout(() => {
+            alert(`${taskName} 완료!`);
+            resolve(taskName);
+          }, ms);
+        });
+      }
+
+      callbackBtn.addEventListener("click", () => {
+        alert("콜백 지옥 시작");
+        setTimeout(() => {
+          alert("사용자 조회");
+          setTimeout(() => {
+            alert("게시물 조회");
+            setTimeout(() => {
+              alert("댓글 조회");
+              alert("콜백 지옥 종료"); // 장풍 쏜다
+            }, 1000);
+          }, 1000);
+        }, 1000);
+      });
+
+      promiseBtn.addEventListener("click", () => {
+        alert("프라미스 메서드 체이닝 연옥 시작");
+        alert("사용자 조회");
+        asyncTask("사용자 조회", 1000) // Promise에 종속...
+          .then((res) => {
+            alert("게시물 조회");
+            return asyncTask("게시물 조회", 1000);
+          })
+          .then((res) => {
+            alert("댓글 조회");
+            return asyncTask("댓글 조회", 1000);
+          })
+          .then((res) => {
+            alert("프라미스 메서드 체이닝 연옥 종료");
+          });
+      });
+
+      asyncAwaitBtn.addEventListener("click", async () => {
+        alert("async/await 시작");
+        alert("사용자 조회");
+        const taskname1 = await asyncTask("사용자 조회", 1000); // await
+        console.log(taskname1);
+        alert("게시물 조회");
+        const taskname2 = await asyncTask("게시물 조회", 1000);
+        console.log(taskname2);
+        alert("댓글 조회");
+        const taskname3 = await asyncTask("댓글 조회", 1000);
+        console.log(taskname3);
+        alert("프라미스 메서드 체이닝 연옥 종료");
+      });
+    </script>
+  </body>
+</html>
