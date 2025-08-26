@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>4. Promise 병렬 처리</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid lightgray;
+        border-radius: 8px;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      #log {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid black;
+        background-color: ghostwhite;
+        min-height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>4. Promise 병렬 처리 (All, Race)</h1>
+      <p>여러 개의 비동기 작업을 동시에 처리하는 방법을 실습합니다.</p>
+      <button id="all-btn">Promise.all (모두 완료될 때까지)</button>
+      <button id="race-btn">Promise.race (가장 빠른 하나만)</button>
+      <div id="log"></div>
+    </div>
+
+    <script>
+      const allBtn = document.getElementById("all-btn");
+      const raceBtn = document.getElementById("race-btn");
+      const logDiv = document.getElementById("log");
+
+      const log = (message) => {
+        logDiv.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${message}</div>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
+
+      // 이름과 지연 시간을 받아 Promise를 반환하는 함수
+      const delayedTask = (name, delay) =>
+        new Promise((resolve) => {
+          log(`'${name}' 작업 시작 (소요시간: ${delay / 1000}초)`);
+          setTimeout(() => {
+            log(`✅ '${name}' 작업 완료`);
+            resolve(name);
+          }, delay);
+        });
+
+      /*
+        ==================================================================================
+        🎯 Promise.all: 모든 작업이 끝날 때까지 기다리기
+        ==================================================================================
+        - 여러 개의 Promise를 배열로 받아, 모든 Promise가 성공(fulfilled)하면 결과를 배열로 반환합니다.
+        - 하나라도 실패(rejected)하면 즉시 전체가 실패합니다.
+        - 사용 예: 페이지 렌더링에 필요한 여러 데이터를 모두 받아온 후 화면을 그릴 때
+        */
+      allBtn.addEventListener("click", () => {
+        logDiv.innerHTML = "";
+        log("Promise.all 테스트 시작...");
+
+        // 🧑‍💻 여기에 코드를 작성하세요.
+        // 1. delayedTask 함수를 사용하여 3개의 Promise가 담긴 배열(tasks)을 만듭니다.
+        //    - 'API 1: 사용자 정보', 1500ms
+        //    - 'API 2: 상품 목록', 2000ms
+        //    - 'API 3: 광고 배너', 1000ms
+        // 2. Promise.all(tasks)를 호출합니다.
+        // 3. .then()을 사용하여 모든 작업이 성공했을 때의 결과를 로그로 출력합니다.
+      });
+
+      /*
+        ==================================================================================
+        🎯 Promise.race: 가장 빠른 작업만 기다리기
+        ==================================================================================
+        - 여러 개의 Promise를 배열로 받아, 그중 가장 먼저 완료(성공 또는 실패)되는 Promise의 결과를 따릅니다.
+        - 사용 예: 여러 서버 중 가장 응답이 빠른 서버의 데이터를 사용하거나, 특정 시간 내에 응답이 없으면 타임아웃 처리할 때
+        */
+      raceBtn.addEventListener("click", () => {
+        logDiv.innerHTML = "";
+        log("Promise.race 테스트 시작...");
+
+        // 🧑‍💻 여기에 코드를 작성하세요.
+        // 1. delayedTask 함수를 사용하여 3개의 Promise가 담긴 배열(servers)을 만듭니다.
+        //    - '가장 느린 서버', 2000ms
+        //    - '보통 서버', 1500ms
+        //    - '가장 빠른 서버', 800ms
+        // 2. Promise.race(servers)를 호출합니다.
+        // 3. .then()을 사용하여 가장 먼저 완료된 작업의 결과를 로그로 출력합니다.
+      });
+    </script>
+  </body>
+</html>

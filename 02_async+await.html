@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>5. Async Await</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid lightgray;
+        border-radius: 8px;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      #log {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid black;
+        background-color: ghostwhite;
+        min-height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>5. Async/Await로 비동기 코드 동기처럼 작성하기</h1>
+      <p>
+        Promise 기반 코드를 가장 깔끔하고 직관적으로 만드는 방법을 확인하세요.
+      </p>
+      <button id="start-btn">작업 시작 (성공)</button>
+      <button id="fail-btn">작업 시작 (실패)</button>
+      <div id="log"></div>
+    </div>
+
+    <script>
+      const startBtn = document.getElementById("start-btn");
+      const failBtn = document.getElementById("fail-btn");
+      const logDiv = document.getElementById("log");
+
+      const log = (message, isError = false) => {
+        logDiv.innerHTML += `<div style="color: ${
+          isError ? "red" : "black"
+        };">${message}</div>`;
+      };
+
+      /*
+        ==================================================================================
+        🎯 Async / Await 이란?
+        ==================================================================================
+        - Promise를 더 쉽게 사용하기 위한 '문법적 설탕(Syntactic Sugar)'입니다.
+        - async: 함수 앞에 붙이면 해당 함수는 항상 Promise를 반환합니다.
+        - await: async 함수 안에서만 사용 가능하며, Promise가 완료될 때까지 코드 실행을 '기다립니다'.
+                 완료되면 Promise의 결과값을 반환합니다.
+        - 장점: 비동기 코드를 동기 코드처럼 순차적으로 작성할 수 있어 가독성이 매우 향상됩니다.
+        - 에러 처리: Promise의 .catch() 대신, 동기 코드에서와 동일한 try...catch 구문을 사용합니다.
+        */
+
+      // Promise를 반환하는 기본 비동기 함수 (이전 예제와 동일)
+      function asyncTask(taskName, duration, shouldSucceed) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (shouldSucceed) {
+              log(`✅ '${taskName}' 완료`);
+              resolve(taskName);
+            } else {
+              log(`❌ '${taskName}' 실패`);
+              reject(new Error(`'${taskName}'에서 문제 발생`));
+            }
+          }, duration);
+        });
+      }
+
+      // async/await를 사용한 비동기 작업 흐름 제어
+      async function runProcess(shouldFail) {
+        log("🚀 작업 프로세스를 시작합니다...");
+
+        // 🧑‍💻 여기에 코드를 작성하세요.
+        // 1. try...catch...finally 구문을 사용하여 에러 핸들링 구조를 만듭니다.
+        // 2. try 블록 안에서:
+        //    - await를 사용하여 '1. 사용자 인증' (1초, 성공) 작업을 기다리고 결과를 변수에 저장합니다.
+        //    - await를 사용하여 '2. 데이터 로드' (1초) 작업을 기다립니다. shouldFail 값에 따라 성공/실패가 결정되어야 합니다.
+        //    - await를 사용하여 '3. 결과 화면 렌더링' (1초, 성공) 작업을 기다립니다.
+        //    - 모든 작업이 성공했음을 알리는 로그를 출력합니다.
+        // 3. catch 블록 안에서:
+        //    - 발생한 에러 메시지를 로그로 출력합니다.
+        // 4. finally 블록 안에서:
+        //    - 작업 프로세스가 종료되었음을 알리는 로그를 출력합니다.
+      }
+
+      startBtn.addEventListener("click", () => {
+        logDiv.innerHTML = "";
+        runProcess(false); // 실패 없이 실행
+      });
+
+      failBtn.addEventListener("click", () => {
+        logDiv.innerHTML = "";
+        runProcess(true); // 중간에 실패하도록 실행
+      });
+    </script>
+  </body>
+</html>
