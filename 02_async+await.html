@@ -81,6 +81,11 @@
 
       // async/await를 사용한 비동기 작업 흐름 제어
       async function runProcess(shouldFail) {
+        // 1. await는 Promise에만 붙일 수 있다 (setTimeout은 Promise가 아님;;;)
+        // - 직접 Promise를 쓰는 경우는...
+        // - 1. 대기 기능을 구현하기 위해서 sleep, wait. setTimeout + Promise
+        // - 2. Race, All. Promise.***.
+        // -> async. function -> Promise. -> return => Promise(return)
         log("🚀 작업 프로세스를 시작합니다...");
 
         // 🧑‍💻 여기에 코드를 작성하세요.
@@ -90,21 +95,56 @@
         //    - await를 사용하여 '2. 데이터 로드' (1초) 작업을 기다립니다. shouldFail 값에 따라 성공/실패가 결정되어야 합니다.
         //    - await를 사용하여 '3. 결과 화면 렌더링' (1초, 성공) 작업을 기다립니다.
         //    - 모든 작업이 성공했음을 알리는 로그를 출력합니다.
-        // 3. catch 블록 안에서:
-        //    - 발생한 에러 메시지를 로그로 출력합니다.
-        // 4. finally 블록 안에서:
-        //    - 작업 프로세스가 종료되었음을 알리는 로그를 출력합니다.
+        try {
+          // {}.then
+          const result1 = await asyncTask(
+            "1. 사용자 인증",
+            Math.random() * 2000,
+            !shouldFail
+          );
+          console.log(result1); // then. catch.
+          log(`- 중간결과 : ${result1}`);
+          // Promise.all? 동기적(순서적) 처리
+          const result2 = await asyncTask(
+            "2. 데이터 로드",
+            Math.random() * 2000,
+            !shouldFail
+          );
+          log(`- 중간결과 : ${result2}`);
+          const result3 = await asyncTask(
+            "3. 결과 화면 렌더링",
+            Math.random() * 2000,
+            !shouldFail
+          );
+          log(`- 중간결과 : ${result3}`);
+          log("모든 작업이 완료되었습니다.");
+        } catch (e) {
+          // 3. catch 블록 안에서:
+          //    - 발생한 에러 메시지를 로그로 출력합니다.
+          // {}.catch
+          console.error(e.message);
+        } finally {
+          // 4. finally 블록 안에서:
+          //    - 작업 프로세스가 종료되었음을 알리는 로그를 출력합니다.
+          // {}.finally
+          log("작업 프로세스 종료");
+        }
       }
 
-      startBtn.addEventListener("click", () => {
+      startBtn.addEventListener("click", async () => {
         logDiv.innerHTML = "";
         runProcess(false); // 실패 없이 실행
       });
 
-      failBtn.addEventListener("click", () => {
+      failBtn.addEventListener("click", async () => {
         logDiv.innerHTML = "";
         runProcess(true); // 중간에 실패하도록 실행
       });
+
+      // 1. Promise -> 동기적으로 처리하기 위해서 await
+      // 2. await를 안붙이고 Promise 함수 -> Promise -> then, catch, all, race를 통한 처리를 강제.
+      // 3. function -> Promise await -> async.
+      // => 한개라도 await (동기 처리)가 필요한 async/Promise가 섞여 있으면 모두 async.
     </script>
   </body>
 </html>
